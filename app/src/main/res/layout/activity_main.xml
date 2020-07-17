@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.MainActivity"
+    android:orientation="vertical">
+
+    <!--自定义View-->
+    <com.jaylen.customviewsdemo.slidingMenus.SlidingMenus
+        android:id="@+id/slidingMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:menuWidth="260dp"
+        app:drawerType="false"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <!--引入菜单布局-->
+            <include layout="@layout/menu_layout"/>
+
+            <!--内容布局-->
+            <include layout="@layout/main_layout"/>
+
+        </LinearLayout>
+    </com.jaylen.customviewsdemo.slidingMenus.SlidingMenus>
+</RelativeLayout>
