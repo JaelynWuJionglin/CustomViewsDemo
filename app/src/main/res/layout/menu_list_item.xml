@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tv_value"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="40dp"
-    android:textSize="20sp"
-    android:text="TEST"
-    android:textColor="@color/red"
+    android:orientation="horizontal"
     android:gravity="center_vertical">
 
-</TextView>
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@mipmap/ic_launcher_round"/>
+
+    <TextView
+        android:id="@+id/tv_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="TEST"
+        android:textColor="@color/mWhite"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.jaylen.customviewsdemo.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
@@ -10,6 +11,7 @@ import com.jaylen.customviewsdemo.numberPickerView.NumberPickerViewFragment
 import com.jaylen.customviewsdemo.slidingMenus.MenuAdapter
 import com.jaylen.customviewsdemo.slidingMenus.MenuBean
 import com.jaylen.customviewsdemo.slidingMenus.SlidingMenuFragment
+import com.jaylen.customviewsdemo.untils.UiUntis
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_layout.*
 import kotlinx.android.synthetic.main.menu_layout.*
@@ -22,6 +24,8 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        UiUntis.makeStatusBarTransparent(this)
+        Log.i("TAG","状态栏高度-------->${UiUntis.getStatusBarHeight()}")
 
         replaceFragment(slidingMenuFragment)
 

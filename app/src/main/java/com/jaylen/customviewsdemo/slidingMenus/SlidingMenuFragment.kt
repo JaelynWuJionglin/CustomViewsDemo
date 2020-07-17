@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import com.jaylen.customviewsdemo.R
 import com.jaylen.customviewsdemo.ui.BaseFragment
-import kotlinx.android.synthetic.main.fragment_slidingmenu.*
 
 class SlidingMenuFragment : BaseFragment(R.layout.fragment_slidingmenu) {
 

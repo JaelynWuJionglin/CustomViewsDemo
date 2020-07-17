@@ -7,7 +7,7 @@ import com.jaylen.customviewsdemo.ui.BaseFragment
 /**
  * @Author Jaylen
  * @mailbox jl.wu@byteflyer.com
- * @Date 7/17 017 11:51
+ * @Date 7/17 2020 11:51
  * @Description
  */
 
@@ -16,5 +16,6 @@ class NumberPickerViewFragment: BaseFragment(R.layout.fragment_number_picker_vie
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
     }
+
 
 }

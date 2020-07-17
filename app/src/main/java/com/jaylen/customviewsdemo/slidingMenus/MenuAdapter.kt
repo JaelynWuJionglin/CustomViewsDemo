@@ -33,9 +33,9 @@ class MenuAdapter(private var context: Context, private var menuList: ArrayList<
         holder.tvValue.text = menuList[position].menuText
         if (menuList[position].isChecked){
             oldCheckedPosition = position
-            holder.tvValue.setTextColor(ContextCompat.getColor(context, R.color.gray))
+            holder.tvValue.setTextColor(ContextCompat.getColor(context, R.color.mOrange))
         }else{
-            holder.tvValue.setTextColor(ContextCompat.getColor(context,R.color.red))
+            holder.tvValue.setTextColor(ContextCompat.getColor(context,R.color.mWhite))
         }
 
         holder.tvValue.setOnClickListener {
