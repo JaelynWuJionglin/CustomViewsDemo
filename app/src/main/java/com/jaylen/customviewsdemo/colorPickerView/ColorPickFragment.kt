@@ -31,7 +31,7 @@ class ColorPickFragment: BaseFragment(R.layout.fragment_color_picker_view){
         color_picker_view.layoutParams = layoutParams
 
         color_picker_view.setColorPickerViewListener { color: Int ->
-            //tv_color.text = "color:$color"
+            tv_color.text = "color:$color"
         }
     }
 }

@@ -15,10 +15,13 @@
         my_view:imageId="@mipmap/pick_color_bg"
         my_view:thumbId="@mipmap/pick_color_location"/>
 
+    <!-- 这里不能设置wrap_content，会导致viwe重绘
+         使得上面取色控件异常
+         详情见：https://www.lizenghai.com/archives/51050.html-->
     <TextView
         android:id="@+id/tv_color"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:textColor="@color/mRed"
         android:textSize="22sp"
         android:text="color:000000"
