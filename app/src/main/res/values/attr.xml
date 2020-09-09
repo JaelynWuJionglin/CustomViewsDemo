@@ -4,4 +4,9 @@
         <attr name="menuWidth" format="dimension"/>
         <attr name="drawerType" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="colorPickerView">
+        <attr name="imageId" format="reference" />
+        <attr name="thumbId" format="reference" />
+    </declare-styleable>
 </resources>

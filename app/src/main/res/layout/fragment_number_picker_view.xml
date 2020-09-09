@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-
     <com.jaylen.customviewsdemo.numberPickerView.NumberPickerView
         android:id="@+id/number_picker_view"
         android:layout_width="wrap_content"
