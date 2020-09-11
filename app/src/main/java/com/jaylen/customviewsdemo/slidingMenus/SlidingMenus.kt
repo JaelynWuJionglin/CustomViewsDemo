@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -101,6 +102,16 @@ class SlidingMenus : HorizontalScrollView{
         }
     }
 
+    private fun myScrollTo(x:Int, y:Int){
+        scrollTo(x, y)
+        if (x==0){
+            isInterceptTouch = true
+            onOpenStatus(true)
+        }else{
+            isInterceptTouch = false
+            onOpenStatus(false)
+        }
+    }
 
     /**
      * 设置子View的宽和高
@@ -161,12 +172,13 @@ class SlidingMenus : HorizontalScrollView{
                 }
                 //隐藏在左边的位置
                 val scrollX:Float = scrollX * 1.0f
+                Log.i("TAGG","x1: $x1   x2:$x2   mMenuWidth:$mMenuWidth     psc:$psc")
                 //Log.i("TAGG","x1-x2: ${x1-x2}   psc:$psc   scrollX:$scrollX")
                 isOpen = if (scrollX > psc) {
                     //隐藏的部分较大, 平滑滚动不显示菜单
                     mySmoothScrollTo(mMenuWidth, 0)
                     false
-                } else {
+                } else{
                     //完全显示菜单
                     mySmoothScrollTo(0, 0)
                     true
@@ -211,6 +223,16 @@ class SlidingMenus : HorizontalScrollView{
     fun closeMenu() {
         if (isOpen) {
             mySmoothScrollTo(mMenuWidth, 0)
+            isOpen = false
+        }
+    }
+
+    /**
+     * 关闭菜单
+     */
+    fun closeMenuNotAmi() {
+        if (isOpen) {
+            myScrollTo(mMenuWidth, 0)
             isOpen = false
         }
     }

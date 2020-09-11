@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jaylen.customviewsdemo.R
 import com.jaylen.customviewsdemo.colorPickerView.ColorPickFragment
-import com.jaylen.customviewsdemo.numberPickerView.NumberPickerViewFragment
+import com.jaylen.customviewsdemo.numberPickerView.NumberPickerFragment
 import com.jaylen.customviewsdemo.slidingMenus.MenuAdapter
 import com.jaylen.customviewsdemo.slidingMenus.MenuBean
 import com.jaylen.customviewsdemo.slidingMenus.SlidingMenuFragment
@@ -35,7 +35,7 @@ class MainActivity : FragmentActivity() {
 
     private fun initMenu(){
         menuList.add(MenuBean(slidingMenuFragment, true))
-        menuList.add(MenuBean(NumberPickerViewFragment(), false))
+        menuList.add(MenuBean(NumberPickerFragment(), false))
         menuList.add(MenuBean(ColorPickFragment(),false))
 
         val manager = LinearLayoutManager(this)
@@ -46,6 +46,7 @@ class MainActivity : FragmentActivity() {
 
         menuAdapter.setMenuClickListener {position:Int->
             replaceFragment(menuList[position].fragment)
+            slidingMenu.toggleMenu()
         }
 
         tv_menu.setOnClickListener {

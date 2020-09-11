@@ -1,5 +1,6 @@
 package com.jaylen.customviewsdemo.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,10 +21,9 @@ abstract class BaseFragment(@LayoutRes resource:Int) : Fragment(){
     lateinit var act: MainActivity
     lateinit var mView: View
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        act = activity as MainActivity
-        Log.e(TAG,"onActivityCreated() ---------------> $resourceId")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.e(TAG,"onCreate() ---------------> $resourceId")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,7 +34,28 @@ abstract class BaseFragment(@LayoutRes resource:Int) : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e(TAG,"onCreateView() ---------------> $resourceId")
+        Log.e(TAG,"onViewCreated() ---------------> $resourceId")
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        act = activity as MainActivity
+        Log.e(TAG,"onActivityCreated() ---------------> $resourceId")
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.e(TAG,"onAttach() ---------------> $resourceId")
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        Log.e(TAG,"onAttachFragment() ---------------> $resourceId")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.e(TAG,"onDetach() ---------------> $resourceId")
     }
 
     override fun onResume() {
