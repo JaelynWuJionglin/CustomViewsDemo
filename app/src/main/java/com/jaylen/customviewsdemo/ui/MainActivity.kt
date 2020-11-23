@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jaylen.customviewsdemo.R
+import com.jaylen.customviewsdemo.banner.BannerFragment
 import com.jaylen.customviewsdemo.colorPickerView.ColorPickFragment
 import com.jaylen.customviewsdemo.numberPickerView.NumberPickerFragment
 import com.jaylen.customviewsdemo.slidingMenus.MenuAdapter
@@ -37,6 +38,7 @@ class MainActivity : FragmentActivity() {
         menuList.add(MenuBean(slidingMenuFragment, true))
         menuList.add(MenuBean(NumberPickerFragment(), false))
         menuList.add(MenuBean(ColorPickFragment(),false))
+        menuList.add(MenuBean(BannerFragment(),false))
 
         val manager = LinearLayoutManager(this)
         manager.orientation = LinearLayoutManager.VERTICAL
@@ -63,10 +65,8 @@ class MainActivity : FragmentActivity() {
     fun showFragment(fragment:Fragment){
         val fragmentTransaction:FragmentTransaction = supportFragmentManager.beginTransaction()
         //先hide之前的fragment
-        if (nowFragment!=null){
-            if (nowFragment!!.isAdded && nowFragment!!.isVisible){
-                fragmentTransaction.hide(nowFragment!!)
-            }
+        if (nowFragment.isAdded && nowFragment.isVisible){
+            fragmentTransaction.hide(nowFragment)
         }
 
         //添加新的fragment
@@ -83,7 +83,7 @@ class MainActivity : FragmentActivity() {
      * 每次切换fragment都重复创建。
      * replace 方法相当于 先remove掉之前的fragment，再add新的fragment。
      */
-    fun replaceFragment(fragment:Fragment){
+    private fun replaceFragment(fragment:Fragment){
         val fragmentTransaction:FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout,fragment)
         nowFragment = fragment
