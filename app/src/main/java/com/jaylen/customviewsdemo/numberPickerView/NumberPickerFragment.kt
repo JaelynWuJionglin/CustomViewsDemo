@@ -22,7 +22,6 @@ class NumberPickerFragment: BaseFragment(R.layout.fragment_number_picker_view){
 
         initData()
         initNumberPickerView1()
-        initNumberPickerView2()
     }
 
     private fun initData(){
@@ -43,14 +42,5 @@ class NumberPickerFragment: BaseFragment(R.layout.fragment_number_picker_view){
                 Log.i("TAGG","---------> oldVal:${list[oldVal]}   newVal:${list[newVal]}")
             }
         })
-    }
-
-    private fun initNumberPickerView2(){
-        number_picker_view2.setItems(list,5)
-        number_picker_view2.setInitPosition(0)
-        number_picker_view2.setTextSize(30f)
-        number_picker_view2.setListener {
-            Log.i("TAGG","---------> itemStr:${list[it]}")
-        }
     }
 }

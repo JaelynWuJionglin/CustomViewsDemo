@@ -15,11 +15,5 @@
         app:npv_TextColorSelected="@color/mBlack"
         app:npv_TextColorHint="@color/mDarkGray"
         app:npv_DividerColor="@color/mDarkGray"/>
-    
-    <com.jaylen.customviewsdemo.numberPickerView.timeroller.LoopView
-        android:id="@+id/number_picker_view2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"/>
 
 </LinearLayout>

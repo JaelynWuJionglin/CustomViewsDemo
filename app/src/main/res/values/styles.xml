@@ -1,10 +1,10 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorAccent">@color/mOrange</item> <!--控制各个控件被选中时的颜色-->
-        <item name="android:statusBarColor">@color/mRoyalBlue</item> <!--状态栏颜色-->
-        <item name="android:navigationBarColor">@color/mBlack</item> <!--底部导航栏颜色-->
+        <item name="android:statusBarColor">@color/mDodgerBlue</item> <!--状态栏颜色-->
+        <item name="android:navigationBarColor">@color/mWhite</item> <!--底部导航栏颜色-->
     </style>
 
 </resources>
