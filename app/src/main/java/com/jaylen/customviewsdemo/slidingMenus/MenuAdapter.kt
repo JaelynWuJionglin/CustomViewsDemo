@@ -1,5 +1,6 @@
 package com.jaylen.customviewsdemo.slidingMenus
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -25,11 +26,11 @@ class MenuAdapter(private var context: Context, private var menuList: ArrayList<
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
-        var view:View = LayoutInflater.from(context).inflate(R.layout.menu_list_item, parent, false)
+        val view:View = LayoutInflater.from(context).inflate(R.layout.menu_list_item, parent, false)
         return MyHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MyHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyHolder, @SuppressLint("RecyclerView") position: Int) {
         holder.tvValue.text = menuList[position].menuText
         if (menuList[position].isChecked){
             oldCheckedPosition = position

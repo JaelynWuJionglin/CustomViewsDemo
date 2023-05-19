@@ -9,9 +9,11 @@ import com.jaylen.customviewsdemo.banner.BannerFragment
 import com.jaylen.customviewsdemo.colorPickerView.ColorPickFragment
 import com.jaylen.customviewsdemo.customloadview.CustomLoadingViewFragment
 import com.jaylen.customviewsdemo.numberPickerView.NumberPickerFragment
+import com.jaylen.customviewsdemo.radarView.RadarViewFragment
 import com.jaylen.customviewsdemo.slidingMenus.MenuAdapter
 import com.jaylen.customviewsdemo.slidingMenus.MenuBean
 import com.jaylen.customviewsdemo.slidingMenus.SlidingMenuFragment
+import com.jaylen.customviewsdemo.waterSurround.WaterSurroundFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_layout.*
 import kotlinx.android.synthetic.main.menu_layout.*
@@ -35,6 +37,8 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
         menuList.add(MenuBean(ColorPickFragment(), false))
         menuList.add(MenuBean(BannerFragment(), false))
         menuList.add(MenuBean(CustomLoadingViewFragment(), false))
+        menuList.add(MenuBean(RadarViewFragment(), false))
+        menuList.add(MenuBean(WaterSurroundFragment(), false))
 
         val manager = LinearLayoutManager(this)
         manager.orientation = LinearLayoutManager.VERTICAL
