@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import kotlin.math.*
 
@@ -136,16 +135,16 @@ class WaterSurroundView : View {
     }
 
     private fun initAnimation() {
-        valueAnimator1.duration = 40 * 1000
+        valueAnimator1.duration = 16 * 1000
         valueAnimator1.repeatCount = ValueAnimator.INFINITE
-        valueAnimator1.interpolator = AccelerateDecelerateInterpolator()
+        valueAnimator1.interpolator = LinearInterpolator()
         valueAnimator1.addUpdateListener {
             animatorValue1 = it.animatedValue as Float
             setAc()
             invalidate()
         }
 
-        valueAnimator2.duration = 30 * 1000
+        valueAnimator2.duration = 13 * 1000
         valueAnimator2.repeatCount = ValueAnimator.INFINITE
         valueAnimator2.interpolator = LinearInterpolator()
         valueAnimator2.addUpdateListener {
