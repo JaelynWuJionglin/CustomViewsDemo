@@ -8,6 +8,7 @@
     <com.jaylen.customviewsdemo.waterSurround.WaterSurroundView
         android:id="@+id/radarView"
         android:layout_width="260dp"
-        android:layout_height="260dp"/>
+        android:layout_height="260dp"
+        android:background="#99999999"/>
 
 </LinearLayout>

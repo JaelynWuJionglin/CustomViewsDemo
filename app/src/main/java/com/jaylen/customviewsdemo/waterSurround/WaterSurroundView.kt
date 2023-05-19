@@ -5,11 +5,9 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
-import kotlin.math.cos
-import kotlin.math.floor
-import kotlin.math.min
-import kotlin.math.sin
+import kotlin.math.*
 
 class WaterSurroundView : View {
 
@@ -54,8 +52,6 @@ class WaterSurroundView : View {
      */
     private var waterPaint = Paint()
 
-    private var idDraw = false
-
     /**
      * 坐标点
      */
@@ -70,10 +66,8 @@ class WaterSurroundView : View {
      */
     private var valueAnimator1 = ValueAnimator.ofFloat(0f, 360f)
     private var valueAnimator2 = ValueAnimator.ofFloat(0f, 360f)
-    private var valueAnimator3 = ValueAnimator.ofFloat(0f, 360f)
     private var animatorValue1 = 0f
     private var animatorValue2 = 0f
-    private var animatorValue3 = 0f
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -117,7 +111,7 @@ class WaterSurroundView : View {
     }
 
     private fun init(context: Context) {
-        waterHeight = (context.resources.displayMetrics.density * 40).toInt()
+        waterHeight = (context.resources.displayMetrics.density * 36).toInt()
         ringWidth = (context.resources.displayMetrics.density * 30).toInt()
 
         ringPaint.color = Color.parseColor("#FFff0000")
@@ -128,7 +122,7 @@ class WaterSurroundView : View {
         ringPaintCenter.isAntiAlias = true
         ringPaintCenter.style = Paint.Style.FILL
 
-        waterPaint.color = Color.parseColor("#2fff0000")
+        waterPaint.color = Color.parseColor("#3fff0000")
         waterPaint.isAntiAlias = true
         waterPaint.style = Paint.Style.FILL
         waterPaint.isDither = true
@@ -144,30 +138,20 @@ class WaterSurroundView : View {
     private fun initAnimation() {
         valueAnimator1.duration = 40 * 1000
         valueAnimator1.repeatCount = ValueAnimator.INFINITE
-        valueAnimator1.interpolator = LinearInterpolator()
+        valueAnimator1.interpolator = AccelerateDecelerateInterpolator()
         valueAnimator1.addUpdateListener {
             animatorValue1 = it.animatedValue as Float
             setAc()
             invalidate()
         }
 
-        valueAnimator2.duration = 23 * 1000
+        valueAnimator2.duration = 30 * 1000
         valueAnimator2.repeatCount = ValueAnimator.INFINITE
         valueAnimator2.interpolator = LinearInterpolator()
         valueAnimator2.addUpdateListener {
             animatorValue2 = it.animatedValue as Float  + 45
             if (animatorValue2 > 360){
                 animatorValue2 -= 360
-            }
-        }
-
-        valueAnimator3.duration = 18 * 1000
-        valueAnimator3.repeatCount = ValueAnimator.INFINITE
-        valueAnimator3.interpolator = LinearInterpolator()
-        valueAnimator3.addUpdateListener {
-            animatorValue3 = it.animatedValue as Float  + 100
-            if (animatorValue3 > 360){
-                animatorValue3 -= 360
             }
         }
     }
@@ -179,9 +163,6 @@ class WaterSurroundView : View {
         if (!valueAnimator2.isRunning) {
             valueAnimator2.start()
         }
-        if (!valueAnimator3.isRunning) {
-            valueAnimator3.start()
-        }
     }
 
     private fun amStop() {
@@ -190,9 +171,6 @@ class WaterSurroundView : View {
         }
         if (valueAnimator2.isRunning) {
             valueAnimator2.cancel()
-        }
-        if (valueAnimator3.isRunning) {
-            valueAnimator3.cancel()
         }
     }
 
@@ -203,7 +181,6 @@ class WaterSurroundView : View {
             //绘制阴影
             drawWaterPath(canvas, animatorValue1)
             drawWaterPath(canvas, animatorValue2)
-            drawWaterPath(canvas, animatorValue3)
 
             //绘制中间圆环
             drawRing(canvas)
@@ -258,8 +235,9 @@ class WaterSurroundView : View {
                 }
             }
 
+            //平滑过度
             if (i == 4) {
-                radius = minRadius + waterHeight / 2.0f
+                radius = minRadius + (waterHeight / 3.0f) * (abs(1 - ac3))
             }
 
             var angle = i * angleInterval + startAngle
@@ -270,7 +248,9 @@ class WaterSurroundView : View {
 
             val p = getRoundPointF(radius, angle)
             pointList.add(p)
-//            canvas.drawPoint(p.x, p.y, pointPaint)
+
+            //曲线控制点
+//            canvas.drawText(i.toString(),p.x, p.y, pointPaint)
         }
 
         // 绘制贝塞尔曲线
@@ -370,9 +350,5 @@ class WaterSurroundView : View {
         val pointX = centerX + radius * cos(Math.toRadians(angle.toDouble()))
         val pointY = centerY + radius * sin(Math.toRadians(angle.toDouble()))
         return PointF(pointX.toFloat(), pointY.toFloat())
-    }
-
-    fun getA():Float{
-        return animatorValue1
     }
 }
