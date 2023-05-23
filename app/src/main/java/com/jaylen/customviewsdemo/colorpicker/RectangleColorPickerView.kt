@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.jaylen.customviewsdemo.R
-import java.lang.Math.toRadians
-import kotlin.math.min
-import kotlin.math.sqrt
-import kotlin.math.tan
+import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.pow
 
 /**
  * 方形取色盘
@@ -29,13 +29,7 @@ class RectangleColorPickerView constructor(
     private var height = 0
 
     //倒角
-    private val xyRadius = 50f
-
-    //取色范围半径
-    var radius: Float = 0f
-        private set(value) {
-            field = value - stroke - gap - colorRadius - colorStroke
-        }
+    private val xyRadius = 30f
 
     //取色圆半径
     var colorRadius = 50f
@@ -76,12 +70,12 @@ class RectangleColorPickerView constructor(
 
     var isOutOfBounds: Boolean = false
 
+    private val rect = RectF()
     private val paint = Paint()
-    private var colorCount = 360
-    private val colors: IntArray
-    private val positions: FloatArray
-    private var xColor: Float = 0f
-    private var yColor: Float = 0f
+    private var colorBitmap: Bitmap? = null
+    private var pixels = intArrayOf()
+    private var xColor = 0f
+    private var yColor = 0f
     private var colorChangeCallBack: ColorChangeCallBack? = null
 
     init {
@@ -97,14 +91,6 @@ class RectangleColorPickerView constructor(
         isOutOfBounds =
             typedArray.getBoolean(R.styleable.RoundColorPaletteHSV360_isOutOfBounds, false)
         typedArray.recycle()
-
-        val colorAngleStep = 360 / colorCount
-        positions = FloatArray(colorCount + 1) { i -> i / (colorCount * 1f) }
-        val hsv = floatArrayOf(0f, 1f, 1f)
-        colors = IntArray(colorCount + 1) { i ->
-            hsv[0] = 360 - i * colorAngleStep % 360f
-            Color.HSVToColor(hsv)
-        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -114,7 +100,7 @@ class RectangleColorPickerView constructor(
 
         if (width > 0 && height > 0) {
             setMeasuredDimension(width, height)
-            radius = (min(width,height) - paddingStart - paddingEnd).toFloat()
+            createBitmap()
             findColorPoint(color)
         }
     }
@@ -128,42 +114,14 @@ class RectangleColorPickerView constructor(
 
     //色盘
     private fun createColorWheel(canvas: Canvas?) {
-        paint.reset()
-        paint.isAntiAlias = true
-
-        val inWith = width / (colorCount * 1.0f)
-        for (i in 0 until colorCount){
-            val rect1 = RectF()
-            rect1.left = stroke + (i * inWith)
-            rect1.top = stroke
-            rect1.right = stroke  + ((i + 1) * inWith)
-            rect1.bottom = height.toFloat() - stroke
-            paint.shader = LinearGradient(
-                0f,
-                0f,
-                0f,
-                rect1.bottom,
-                intArrayOf(
-                    Color.parseColor("#FFFFFF"),
-                    colors[i]
-                ),
-                null,
-                Shader.TileMode.MIRROR
-            )
-            canvas?.drawRect(rect1,paint)
-        }
+        canvas?.drawBitmap(colorBitmap!!, rect.left, rect.top, paint)
 
         //边框
         paint.shader = null
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = stroke
         paint.color = strokeColor
-        val rect2 = RectF()
-        rect2.left = stroke / 2.0f
-        rect2.top = stroke / 2.0f
-        rect2.right = width.toFloat() - stroke / 2.0f
-        rect2.bottom = height.toFloat() - stroke / 2.0f
-        canvas?.drawRoundRect(rect2,xyRadius,xyRadius,paint)
+        canvas?.drawRoundRect(rect, xyRadius, xyRadius, paint)
     }
 
     //取色圆
@@ -182,13 +140,13 @@ class RectangleColorPickerView constructor(
         canvas?.drawCircle(x, y, colorRadius, paint)
 
         //绘制去色盘内部准心
-        paint.isAntiAlias = true
-        paint.color = Color.parseColor("#505050")
-        paint.strokeWidth = colorStroke / 3.0f * 2
-        canvas?.drawLine(x, y + colorRadius, x, y + colorRadius / 5.0f * 3, paint)
-        canvas?.drawLine(x, y - colorRadius, x, y - colorRadius / 5.0f * 3, paint)
-        canvas?.drawLine(x + colorRadius, y, x + colorRadius / 5.0f * 3, y, paint)
-        canvas?.drawLine(x - colorRadius, y, x - colorRadius / 5.0f * 3, y, paint)
+//        paint.isAntiAlias = true
+//        paint.color = Color.parseColor("#505050")
+//        paint.strokeWidth = colorStroke / 3.0f * 2
+//        canvas?.drawLine(x, y + colorRadius, x, y + colorRadius / 5.0f * 3, paint)
+//        canvas?.drawLine(x, y - colorRadius, x, y - colorRadius / 5.0f * 3, paint)
+//        canvas?.drawLine(x + colorRadius, y, x + colorRadius / 5.0f * 3, y, paint)
+//        canvas?.drawLine(x - colorRadius, y, x - colorRadius / 5.0f * 3, y, paint)
 
         //绘制边框
         paint.style = Paint.Style.STROKE
@@ -203,136 +161,149 @@ class RectangleColorPickerView constructor(
         parent.requestDisallowInterceptTouchEvent(true)
 
         event?.let {
-            val pointToCircle = pointToCircle(it.x, it.y)
-            if (pointToCircle <= radius - if (isOutOfBounds) 0f else (colorRadius - colorStroke)) {
-                xColor = it.x
-                yColor = it.y
-                color =
-                    Color.HSVToColor(floatArrayOf((angle(it.x, it.y)), pointToCircle / radius, 1f))
-            } else {
-                findPoint(it.x, it.y)
+            xColor = it.x
+            yColor = it.y
+
+            if (xColor < colorRadius) {
+                xColor = colorRadius
             }
-            when (it.action) {
-                MotionEvent.ACTION_DOWN or MotionEvent.ACTION_MOVE -> {
-                    colorChangeCallBack?.onChange(color)
-                }
-                MotionEvent.ACTION_UP -> {
-                    colorChangeCallBack?.onChangeEnd(color)
-                }
+            if (xColor > width - colorRadius) {
+                xColor = width - colorRadius
             }
-            invalidate()
+
+            if (yColor < colorRadius) {
+                yColor = colorRadius
+            }
+            if (yColor > height - colorRadius) {
+                yColor = height - colorRadius
+            }
+
+            if (colorBitmap != null) {
+                color = colorBitmap!!.getPixel(xColor.toInt(), yColor.toInt())
+                when (it.action) {
+                    MotionEvent.ACTION_DOWN or MotionEvent.ACTION_MOVE -> {
+                        colorChangeCallBack?.onChange(color)
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        colorChangeCallBack?.onChangeEnd(color)
+                    }
+                }
+                invalidate()
+            }
         }
         return true
     }
 
-    //点到圆心距离
-    private fun pointToCircle(x: Float = width / 2f, y: Float = height / 2f) =
-        sqrt((x - width / 2f) * (x - width / 2f) + (y - height / 2f) * (y - height / 2f))
+    private fun createBitmap() {
+        val st = floor(stroke / 2.0f) - 1 //小数转整数会有误差，导致出现毛边
+        rect.left = st
+        rect.top = st
+        rect.right = width.toFloat() - st
+        rect.bottom = height.toFloat() - st
 
-    //离目标最近的点 x²+y²=r² 和 ax+by=0(一般式) 的解方程
-    private fun findPoint(x1: Float = width / 2f, y1: Float = height / 2f) {
-        // 直线一般方程
-        // 以圆心为坐标0，0 重新计算点（a，b）坐标
-        val a = y1 - height / 2.0f
-        val b = x1 - width / 2.0f
-        val r = radius - if (isOutOfBounds) 0f else (colorRadius - colorStroke)
-        //r^2/((b/a)^2+1)的开平方
-        yColor = sqrt((r * r) / ((b / a) * (b / a) + 1))
-        //判断开平方的正负值
-        if (a < 0) yColor = -yColor
-        xColor = (b * yColor) / a + width / 2f
-        yColor += height / 2f
-        color = Color.HSVToColor(floatArrayOf((angle(xColor, yColor)), 1f, 1f))
+        val oc = intArrayOf(
+            0xffff0000.toInt(),
+            0xffffff00.toInt(),
+            0xff00ff00.toInt(),
+            0xff00ffff.toInt(),
+            0xff0000ff.toInt(),
+            0xffff00ff.toInt(),
+            0xffff0000.toInt()
+        )
+        val op = floatArrayOf(0f, 0.16667f, 0.33333f, 0.5f, 0.66667f, 0.83333f, 1f)
+
+        val lg1 = LinearGradient(
+            0f,
+            0f,
+            rect.right,
+            0f,
+            oc,
+            op,
+            Shader.TileMode.MIRROR
+        )
+
+        val lg2 = LinearGradient(
+            0f,
+            0f,
+            0f,
+            rect.bottom,
+            0xffffffff.toInt(),
+            0,
+            Shader.TileMode.MIRROR
+        )
+
+        colorBitmap = Bitmap.createBitmap(
+            (width - st * 2).toInt(),
+            (height - st * 2).toInt(),
+            Bitmap.Config.ARGB_8888
+        )
+        val bitmapCanvas = Canvas(colorBitmap!!)
+
+        paint.reset()
+        paint.isAntiAlias = true
+        paint.shader = lg1
+        bitmapCanvas.drawRoundRect(rect, xyRadius, xyRadius, paint)
+
+        paint.shader = lg2
+        bitmapCanvas.drawRoundRect(rect, xyRadius, xyRadius, paint)
+
+        //像素点
+        pixels = IntArray(colorBitmap!!.width * colorBitmap!!.height)
+        colorBitmap!!.getPixels(
+            pixels,
+            0,
+            colorBitmap!!.width,
+            0,
+            0,
+            colorBitmap!!.width,
+            colorBitmap!!.height
+        )
+
+        //默认位置
+        xColor = width / 2.0f
+        yColor = height / 2.0f
+        this.color = colorBitmap!!.getPixel(xColor.toInt(), yColor.toInt())
+        colorChangeCallBack?.onChange(color)
     }
 
-    //角度
-    private fun angle(x: Float = width / 2f, y: Float = height / 2f): Float {
-        var angdeg: Int
+    private fun findColorPoint(color: Int): Boolean {
+        if (pixels.isNotEmpty()) {
+            for (i in pixels.indices){
+                val red = Color.red(pixels[i])
+                val green = Color.green(pixels[i])
+                val blue = Color.blue(pixels[i])
+                if (red == Color.red(color) && green == Color.green(color) && blue == Color.blue(color)){
+                    xColor = (i % colorBitmap!!.width).toFloat()
+                    yColor = floor(i / (colorBitmap!!.width.toFloat()))
 
-        //特殊角度, 与x轴垂直不存在斜率
-        if (x - width / 2f == 0f && y - height / 2f < 0) {
-            angdeg = 90
-        } else {
-            //到圆心的斜率
-            val k = ((y - height / 2f) * (y - height / 2f)) / ((x - width / 2f) * (x - width / 2f))
-            //二分法
-            var min = 0.00
-            var max = 90.00
-            while (max - min > 1) {
-                val deg = min + (max - min) / 2
-                if (k > tan(toRadians(deg))) min = deg else max = deg
-            }
-            angdeg = (max - 1).toInt()
-        }
+                    if (xColor < colorRadius) {
+                        xColor = colorRadius
+                    }
+                    if (xColor > width - colorRadius) {
+                        xColor = width - colorRadius
+                    }
 
-        if ((x - width / 2f <= 0f && y - height / 2f <= 0f)) {//第二象限 90~180
-            angdeg = 180 - angdeg
-        } else if ((x - width / 2f <= 0f && y - height / 2f >= 0f)) {//第三象限 180~270
-            angdeg += 180
-        } else if ((x - width / 2f >= 0f && y - height / 2f >= 0f)) {//第四象限 270~360
-            angdeg = 360 - angdeg
-        }
-
-        return angdeg.toFloat()
-    }
-
-    //根据颜色定位取色盘位置 x²+y²=r² 和 y=kx(点斜式) 的解方程
-    private fun findColorPoint(color: Int, x: Float = width / 2f, y: Float = height / 2f) {
-        if (radius <= 0) {
-            return
-        }
-        val hsv = floatArrayOf(0f, 1f, 1f)
-        Color.colorToHSV(color, hsv)
-        var angle = hsv[0].toDouble()
-        var r = radius - if (isOutOfBounds) 0f else (colorRadius - colorStroke)
-        r *= hsv[1]
-        when (angle) {
-            90.0 -> {
-                xColor = x
-                yColor = y - r
-            }
-            180.0 -> {
-                xColor = x - r
-                yColor = y
-            }
-            270.0 -> {
-                xColor = x
-                yColor = y + r
-            }
-            360.0 -> {
-                xColor = x + r
-                yColor = y
-            }
-            else -> {
-                if (angle > 180) angle = 360 - angle
-                val k = tan(toRadians(angle))
-                xColor = sqrt((r * r) / (k * k + 1)).toFloat()
-                if (hsv[0].toDouble() < 90 || hsv[0].toDouble() > 270) xColor = -xColor
-                yColor =
-                    if (hsv[0].toDouble() > 180) y - (k * xColor).toFloat() else y + (k * xColor).toFloat()
-                xColor = x - xColor
+                    if (yColor < colorRadius) {
+                        yColor = colorRadius
+                    }
+                    if (yColor > height - colorRadius) {
+                        yColor = height - colorRadius
+                    }
+                    return true
+                }
             }
         }
-    }
-
-    //是否是黑色或灰色
-    private fun colorIsGray(color: Int): Boolean{
-        val red = Color.red(color)
-        val green = Color.green(color)
-        val blue = Color.blue(color)
-        return red == green && red == blue
+        return false
     }
 
     /**
      * 设置颜色
      */
     fun changeColor(color: Int) {
-        if (colorIsGray(color)){
-            return
+        if (findColorPoint(color)){
+            this.color = color
+            postInvalidate()
         }
-        this.color = color
-        findColorPoint(color)
-        invalidate()
     }
 
     /**
@@ -340,12 +311,10 @@ class RectangleColorPickerView constructor(
      */
     fun changeColor(red: Int, green: Int, blue: Int) {
         val color = Color.rgb(red, green, blue)
-        if (colorIsGray(color)){
-            return
+        if (findColorPoint(color)){
+            this.color = color
+            postInvalidate()
         }
-        this.color = color
-        findColorPoint(color)
-        invalidate()
     }
 
     /**

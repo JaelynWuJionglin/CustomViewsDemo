@@ -9,7 +9,8 @@
     <Button
         android:id="@+id/button"
         android:layout_width="160dp"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp"
+        android:layout_marginBottom="30dp"/>
 
     <com.jaylen.customviewsdemo.waterSurround.WaterSurroundView
         android:id="@+id/radarView"
@@ -34,15 +35,16 @@
     <com.jaylen.customviewsdemo.colorpicker.RectangleColorPickerView
         android:id="@+id/color_picker"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="35dp"
-        android:layout_marginEnd="35dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="35dp"
         app:gap="0dp"
-        app:stroke="3dp"
-        app:strokeColor="@color/mBlack"
-        app:colorStroke="5dp"
-        app:colorRadius="10dp"
-        app:colorStrokeColor="@color/mBlack"
-        app:isOutOfBounds="true"/>
+        app:stroke="1dp"
+        app:strokeColor="@color/mWhite"
+        app:colorStroke="2dp"
+        app:colorRadius="12dp"
+        app:colorStrokeColor="@color/mWhite"
+        app:isOutOfBounds="true" />
 
 </LinearLayout>

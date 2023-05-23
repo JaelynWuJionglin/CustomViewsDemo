@@ -196,7 +196,8 @@ class ColorPickerView : View {
     fun setImageBitmap(@DrawableRes imageId: Int) {
         imageBitmap = getScaleBitmap(getImageBitmapToId(imageId))
         invalidate()
-    }//            String aa = String.format(Integer.toHexString(getPickAlpha()).toUpperCase(),"00");
+    }
+//            String aa = String.format(Integer.toHexString(getPickAlpha()).toUpperCase(),"00");
 //            String rr = Integer.toHexString(getPickR()).toUpperCase();
 //            String gg = Integer.toHexString(getPickG()).toUpperCase();
 //            String bb = Integer.toHexString(getPickB()).toUpperCase();
