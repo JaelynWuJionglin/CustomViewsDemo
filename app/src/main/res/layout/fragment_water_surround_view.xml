@@ -1,14 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="160dp"
+        android:layout_height="50dp"/>
+
     <com.jaylen.customviewsdemo.waterSurround.WaterSurroundView
         android:id="@+id/radarView"
         android:layout_width="260dp"
         android:layout_height="260dp"
-        android:background="#99999999"/>
+        app:colorCenter="@color/mWhite" />
+
+<!--    <com.jaylen.customviewsdemo.colorpicker.RectangleColorPaletteHSV360
+        android:id="@+id/color_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"
+        app:gap="0dp"
+        app:stroke="0dp"
+        app:strokeColor="@color/mWhite"
+        app:colorStroke="3dp"
+        app:colorRadius="12dp"
+        app:colorStrokeColor="@color/mBlack"
+        app:isOutOfBounds="true"/>-->
+
+    <com.jaylen.customviewsdemo.colorpicker.RectangleColorPickerView
+        android:id="@+id/color_picker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"
+        app:gap="0dp"
+        app:stroke="3dp"
+        app:strokeColor="@color/mBlack"
+        app:colorStroke="5dp"
+        app:colorRadius="10dp"
+        app:colorStrokeColor="@color/mBlack"
+        app:isOutOfBounds="true"/>
 
 </LinearLayout>

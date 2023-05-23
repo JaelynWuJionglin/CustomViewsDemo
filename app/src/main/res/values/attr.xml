@@ -9,4 +9,20 @@
         <attr name="imageId" format="reference" />
         <attr name="thumbId" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="WaterSurroundView">
+        <attr name="waterHeight" format="dimension" />
+        <attr name="colorCenter" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundColorPaletteHSV360">
+        <attr name="colorRadius" format="dimension" />
+        <attr name="colorStroke" format="dimension" />
+        <attr name="gap" format="dimension" />
+        <attr name="stroke" format="dimension" />
+        <attr name="colorStrokeColor" format="color" />
+        <attr name="strokeColor" format="color" />
+        <attr name="isOutOfBounds" format="boolean" />
+    </declare-styleable>
+
 </resources>

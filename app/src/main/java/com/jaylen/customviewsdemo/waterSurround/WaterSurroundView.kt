@@ -5,10 +5,13 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import androidx.annotation.ColorInt
+import com.jaylen.customviewsdemo.R
 import kotlin.math.*
 
-class WaterSurroundView : View {
+class WaterSurroundView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     /**
      * 水波纹高度
@@ -44,12 +47,21 @@ class WaterSurroundView : View {
      * 圆环画笔
      */
     private var ringPaint = Paint()
-    private var ringPaintCenter = Paint()
+    private var ringCenterPaint = Paint()
 
     /**
      * 水波纹画笔
      */
     private var waterPaint = Paint()
+
+    /**
+     * 颜色
+     */
+    @ColorInt
+    private var colorInt: Int = Color.RED
+
+    @ColorInt
+    private var colorIntCenter: Int = Color.WHITE
 
     /**
      * 坐标点
@@ -68,23 +80,56 @@ class WaterSurroundView : View {
     private var animatorValue1 = 0f
     private var animatorValue2 = 0f
 
-    constructor(context: Context) : super(context) {
-        init(context)
+    init {
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.WaterSurroundView)
+        waterHeight = typedArray.getDimension(R.styleable.WaterSurroundView_waterHeight, 100f).toInt()
+        colorIntCenter = typedArray.getColor(R.styleable.WaterSurroundView_colorCenter, Color.WHITE)
+        typedArray.recycle()
+        init()
     }
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(context)
+    /**
+     * 设置控件颜色
+     */
+    fun setColor(@ColorInt colorInt: Int) {
+        this.colorInt = Color.rgb(Color.red(colorInt), Color.green(colorInt), Color.blue(colorInt))
+        setWaterPaint()
+        postInvalidate()
+    }
+
+    fun setColor(red: Int, green: Int, blue: Int) {
+        this.colorInt = Color.rgb(red, green, blue)
+        setWaterPaint()
+        postInvalidate()
+    }
+
+    /**
+     * 设置中间部分的颜色
+     */
+    fun setCenterColor(@ColorInt colorIntCenter: Int) {
+        this.colorIntCenter = colorIntCenter
+        setCenterPaint()
+        postInvalidate()
+    }
+
+    /**
+     * 设置水波纹高度，DP
+     */
+    fun setWaterHeight(height: Int) {
+        waterHeight = (context.resources.displayMetrics.density * height).toInt()
+        setCenterPaint()
+        sizeChange()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         maxRadius = floor((min(measuredWidth, measuredHeight) / 2.0)).toInt()
-
         setMeasuredDimension(maxRadius * 2, maxRadius * 2)
 
-        minRadius = maxRadius - waterHeight
-        centerX = (left + measuredWidth / 2).toFloat()
-        centerY = (top + measuredWidth / 2).toFloat()
+        centerX = (left + maxRadius).toFloat()
+        centerY = (top + maxRadius).toFloat()
+
+        sizeChange()
     }
 
     override fun onAttachedToWindow() {
@@ -109,24 +154,16 @@ class WaterSurroundView : View {
         }
     }
 
-    private fun init(context: Context) {
-        waterHeight = (context.resources.displayMetrics.density * 36).toInt()
-        ringWidth = (context.resources.displayMetrics.density * 30).toInt()
+    private fun sizeChange() {
+        minRadius = maxRadius - waterHeight
+        ringWidth = (minRadius / 2.4f).toInt()
+    }
 
-        ringPaint.color = Color.parseColor("#FFff0000")
-        ringPaint.isAntiAlias = true
-        ringPaint.style = Paint.Style.STROKE
+    private fun init() {
+        setWaterPaint()
+        setCenterPaint()
 
-        ringPaintCenter.color = Color.parseColor("#FFFFFFFF")
-        ringPaintCenter.isAntiAlias = true
-        ringPaintCenter.style = Paint.Style.FILL
-
-        waterPaint.color = Color.parseColor("#3fff0000")
-        waterPaint.isAntiAlias = true
-        waterPaint.style = Paint.Style.FILL
-        waterPaint.isDither = true
-
-        pointPaint.color = Color.parseColor("#0000FF")
+        pointPaint.color = Color.BLUE
         pointPaint.strokeWidth = 6f
         pointPaint.isAntiAlias = true
         pointPaint.style = Paint.Style.FILL
@@ -134,22 +171,40 @@ class WaterSurroundView : View {
         initAnimation()
     }
 
+    private fun setWaterPaint() {
+        ringPaint.color = colorInt
+        ringPaint.isAntiAlias = true
+        ringPaint.style = Paint.Style.STROKE
+
+        waterPaint.color = colorInt
+        waterPaint.alpha = 0x42
+        waterPaint.isAntiAlias = true
+        waterPaint.style = Paint.Style.FILL
+        waterPaint.isDither = true
+    }
+
+    private fun setCenterPaint() {
+        ringCenterPaint.color = colorIntCenter
+        ringCenterPaint.isAntiAlias = true
+        ringCenterPaint.style = Paint.Style.FILL
+    }
+
     private fun initAnimation() {
-        valueAnimator1.duration = 16 * 1000
+        valueAnimator1.duration = 60 * 1000
         valueAnimator1.repeatCount = ValueAnimator.INFINITE
-        valueAnimator1.interpolator = LinearInterpolator()
+        valueAnimator1.interpolator = DecelerateInterpolator()
         valueAnimator1.addUpdateListener {
             animatorValue1 = it.animatedValue as Float
             setAc()
             invalidate()
         }
 
-        valueAnimator2.duration = 13 * 1000
+        valueAnimator2.duration = 53 * 1000
         valueAnimator2.repeatCount = ValueAnimator.INFINITE
         valueAnimator2.interpolator = LinearInterpolator()
         valueAnimator2.addUpdateListener {
-            animatorValue2 = it.animatedValue as Float  + 45
-            if (animatorValue2 > 360){
+            animatorValue2 = it.animatedValue as Float + 123
+            if (animatorValue2 > 360) {
                 animatorValue2 -= 360
             }
         }
@@ -201,32 +256,32 @@ class WaterSurroundView : View {
      * 绘制内不圆心
      */
     private fun drawRingCenter(canvas: Canvas) {
-        canvas.drawCircle(centerX, centerY, (minRadius - ringWidth).toFloat(), ringPaintCenter)
+        canvas.drawCircle(centerX, centerY, (minRadius - ringWidth).toFloat(), ringCenterPaint)
     }
 
     /**
      * 绘制环绕水波纹
      */
-    private fun drawWaterPath(canvas: Canvas,startAngle: Float) {
+    private fun drawWaterPath(canvas: Canvas, startAngle: Float) {
         pointList.clear()
         angleList.clear()
 
         for (i in 0..pointSize) {
-            var radius = minRadius.toFloat() + 10f
+            var radius = minRadius + waterHeight * ac
             if (i % 2 != 0) {
                 //控制点
                 radius = when (i) {
                     1 -> {
-                        minRadius + waterHeight * ac1
+                        minRadius + waterHeight * (ac1 + ac)
                     }
                     3 -> {
-                        minRadius + waterHeight * ac3
+                        minRadius + waterHeight * (ac3 + ac)
                     }
                     5 -> {
-                        minRadius + waterHeight * ac5
+                        minRadius + waterHeight * (ac5 + ac)
                     }
                     7 -> {
-                        minRadius + waterHeight * ac7
+                        minRadius + waterHeight * (ac7 + ac)
                     }
                     else -> {
                         (minRadius + waterHeight).toFloat()
@@ -236,11 +291,11 @@ class WaterSurroundView : View {
 
             //平滑过度
             if (i == 4) {
-                radius = minRadius + (waterHeight / 3.0f) * (abs(1 - ac3))
+                radius = minRadius + (waterHeight / 3.0f) * ((abs(1 - ac5)) + ac)
             }
 
             var angle = i * angleInterval + startAngle
-            if (angle > 360f){
+            if (angle > 360f) {
                 angle -= 360f
             }
             angleList.add(angle)
@@ -279,66 +334,70 @@ class WaterSurroundView : View {
 //            canvas.drawPath(wavePath,waterPaint)
 //        }
 
-        canvas.drawPath(wavePath,waterPaint)
+        canvas.drawPath(wavePath, waterPaint)
     }
 
 
     /**
+     * Ac
      * 控制点改变
      */
+    private val acMax = 2.3f
+    private val acMin = 1.2f
+    private val acNb = 0.0012f
     private var acb1 = false
     private var acb3 = false
     private var acb5 = false
     private var acb7 = false
-    private var ac1 = 0.8f
-    private var ac3 = 1.2f
-    private var ac5 = 1.5f
-    private var ac7 = 1.8f
+    private var ac = 0.35f
+    private var ac1 = acMin
+    private var ac3 = 1.6f
+    private var ac5 = 1.9f
+    private var ac7 = acMax
 
-    private fun setAc(){
-        val n = 0.002f
-        if (ac1 < 0.8f){
+    private fun setAc() {
+        if (ac1 < acMin) {
             acb1 = false
-        } else if (ac1 > 1.8f) {
+        } else if (ac1 > acMax) {
             acb1 = true
         }
-        ac1 = if (acb1){
-            ac1 - n
+        ac1 = if (acb1) {
+            ac1 - acNb
         } else {
-            ac1 + n
+            ac1 + acNb
         }
 
-        if (ac3 < 0.8f){
+        if (ac3 < acMin) {
             acb3 = false
-        } else if (ac1 > 1.8f) {
+        } else if (ac1 > acMax) {
             acb3 = true
         }
-        ac3 = if (acb3){
-            ac3 - n
+        ac3 = if (acb3) {
+            ac3 - acNb
         } else {
-            ac3 + n
+            ac3 + acNb
         }
 
-        if (ac5 < 0.8f){
+        if (ac5 < acMin) {
             acb5 = false
-        } else if (ac5 > 1.8f) {
+        } else if (ac5 > acMax) {
             acb5 = true
         }
-        ac5 = if (acb5){
-            ac5 - n
+        ac5 = if (acb5) {
+            ac5 - acNb
         } else {
-            ac5 + n
+            ac5 + acNb
         }
 
-        if (ac7 < 0.8f){
+        if (ac7 < acMin) {
             acb7 = false
-        } else if (ac7 > 1.8f) {
+        } else if (ac7 > acMax) {
             acb7 = true
         }
-        ac7 = if (acb7){
-            ac7 - n
+        ac7 = if (acb7) {
+            ac7 - acNb
         } else {
-            ac7 + n
+            ac7 + acNb
         }
     }
 
