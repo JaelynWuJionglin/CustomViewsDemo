@@ -11,7 +11,15 @@ import androidx.annotation.ColorInt
 import com.jaylen.customviewsdemo.R
 import kotlin.math.*
 
-class WaterSurroundView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
+class WaterSurroundView constructor(
+    context: Context,
+    attrs: AttributeSet?,
+    defStyleAttr: Int
+) : View(context, attrs, defStyleAttr) {
+
+    constructor(context: Context) : this(context, null, 0)
+
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     /**
      * 水波纹高度
