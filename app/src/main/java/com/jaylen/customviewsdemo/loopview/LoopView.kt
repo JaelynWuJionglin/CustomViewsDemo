@@ -483,7 +483,7 @@ class LoopView : View {
     private fun scrollBy(velocityY: Float) {
         cancelFuture()
         // 修改这个值可以改变滑行速度
-        val velocityFling = 10
+        val velocityFling = 15
         mFuture = mExecutor.scheduleWithFixedDelay(
             InertiaTimerTask(this, velocityY),
             0,
@@ -496,7 +496,7 @@ class LoopView : View {
         fun onItemSelected(index: Int)
     }
 
-    private class LoopViewGestureListener internal constructor(val loopView: LoopView) :
+    private class LoopViewGestureListener(val loopView: LoopView) :
         SimpleOnGestureListener() {
         override fun onFling(
             e1: MotionEvent,
