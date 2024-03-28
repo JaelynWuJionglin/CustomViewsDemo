@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 
 /**
  * @Author Jaylen
- * @mailbox jl.wu@byteflyer.com
  * @Date 6/17 017 13:35
  * @Description
  */

@@ -9,7 +9,6 @@ import kotlinx.android.synthetic.main.fragment_color_picker_view.*
 
 /**
  * @Author Jaylen
- * @mailbox jl.wu@byteflyer.com
  * @Date 9/9 009 17:23
  * @Description
  */

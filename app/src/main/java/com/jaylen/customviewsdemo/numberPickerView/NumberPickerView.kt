@@ -7,6 +7,7 @@ import android.graphics.Paint.Align
 import android.graphics.Typeface
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.Looper
 import android.os.Message
 import android.text.TextPaint
 import android.text.TextUtils
@@ -396,7 +397,7 @@ class NumberPickerView : View {
                 }
             }
         }
-        mHandlerInMainThread = object : Handler() {
+        mHandlerInMainThread = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 when (msg.what) {

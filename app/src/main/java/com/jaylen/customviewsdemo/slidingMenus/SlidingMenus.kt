@@ -14,7 +14,6 @@ import com.jaylen.customviewsdemo.R
 
 /**
  * @Author Jaylen
- * @mailbox jl.wu@byteflyer.com
  * @Date 6/17 017 18:40
  * @Description
  */

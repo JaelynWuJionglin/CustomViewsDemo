@@ -10,7 +10,6 @@ import com.jaylen.customviewsdemo.R
 
 /**
  * @Author Jaylen
- * @mailbox jl.wu@byteflyer.com
  * @Date 9/9 009 17:17
  * @Description
  */

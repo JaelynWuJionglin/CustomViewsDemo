@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 
 /**
  * @Author Jaylen
- * @mailbox jl.wu@byteflyer.com
  * @Date 7/17 017 14:35
  * @Description
  */

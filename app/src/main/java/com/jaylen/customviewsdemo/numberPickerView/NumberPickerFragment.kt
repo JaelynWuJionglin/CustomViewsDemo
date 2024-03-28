@@ -9,7 +9,6 @@ import kotlin.collections.ArrayList
 
 /**
  * @Author Jaylen
- * @mailbox jl.wu@byteflyer.com
  * @Date 7/17 2020 11:51
  * @Description
  */

@@ -9,6 +9,7 @@ import com.jaylen.customviewsdemo.banner.BannerFragment
 import com.jaylen.customviewsdemo.colorPickerView.ColorPickFragment
 import com.jaylen.customviewsdemo.customloadview.CustomLoadingViewFragment
 import com.jaylen.customviewsdemo.numberPickerView.NumberPickerFragment
+import com.jaylen.customviewsdemo.loopview.LoopViewFragment
 import com.jaylen.customviewsdemo.radarView.RadarViewFragment
 import com.jaylen.customviewsdemo.slidingMenus.MenuAdapter
 import com.jaylen.customviewsdemo.slidingMenus.MenuBean
@@ -34,6 +35,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     private fun initMenu() {
         menuList.add(MenuBean(slidingMenuFragment, true))
         menuList.add(MenuBean(NumberPickerFragment(), false))
+        menuList.add(MenuBean(LoopViewFragment(),false))
         menuList.add(MenuBean(ColorPickFragment(), false))
         menuList.add(MenuBean(BannerFragment(), false))
         menuList.add(MenuBean(CustomLoadingViewFragment(), false))
